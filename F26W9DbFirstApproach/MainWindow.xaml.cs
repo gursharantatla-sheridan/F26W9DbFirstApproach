@@ -22,6 +22,7 @@ namespace F26W9DbFirstApproach
         public MainWindow()
         {
             InitializeComponent();
+            LoadStandardsInCombobox();
         }
 
         private void LoadStudents()
@@ -30,9 +31,35 @@ namespace F26W9DbFirstApproach
             grdStudents.ItemsSource = students;
         }
 
+        private void LoadStandardsInCombobox()
+        {
+            var standards = db.Standards.ToList();
+            cmbStandard.ItemsSource = standards;
+            cmbStandard.DisplayMemberPath = "StandardName";
+            cmbStandard.SelectedValuePath = "StandardId";
+        }
+
         private void btnLoadStudents_Click(object sender, RoutedEventArgs e)
         {
             LoadStudents();
+        }
+
+        private void btnFind_Click(object sender, RoutedEventArgs e)
+        {
+            int id = int.Parse(txtId.Text);
+            var std = db.Students.Find(id);
+
+            if (std != null)
+            {
+                txtName.Text = std.StudentName;
+                cmbStandard.SelectedValue = std.StandardId;
+            }
+            else
+            {
+                txtName.Text = "";
+                cmbStandard.SelectedIndex = -1;
+                MessageBox.Show("Invalid ID. Please try again.");
+            }
         }
     }
 }
